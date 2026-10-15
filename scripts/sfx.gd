@@ -31,6 +31,7 @@ var _players: Array[AudioStreamPlayer] = []
 var _music: AudioStreamPlayer
 var _songs := {}
 var _want_song := ""
+var _tasks: Array[int] = []
 
 
 func _ready() -> void:
@@ -45,7 +46,14 @@ func _ready() -> void:
 	# Render every song in the background so level loads never hitch.
 	for name in SONGS:
 		var n: String = name
-		WorkerThreadPool.add_task(func(): _song_ready.call_deferred(n, _render_song(SONGS[n])))
+		_tasks.append(WorkerThreadPool.add_task(func(): _song_ready.call_deferred(n, _render_song(SONGS[n]))))
+
+
+# Quitting while songs are still rendering hung or crashed the game, so wait for them first.
+func _exit_tree() -> void:
+	for id in _tasks:
+		WorkerThreadPool.wait_for_task_completion(id)
+	_tasks.clear()
 
 
 func play(name: String, pitch := 1.0, vol_db := -8.0) -> void:

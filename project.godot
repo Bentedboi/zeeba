@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Princess Zeeba"
 config/description="A Mars platformer about a martian princess and a very helpless human."
-run/main_scene="res://scenes/title.tscn"
+run/main_scene="res://scenes/boot.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
